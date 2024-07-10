@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
-const PersonForm = ({ persons, setPersons }) => {
-
+const PersonForm = ({ persons, addPerson, updatePerson }) => {
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
 
@@ -13,20 +12,21 @@ const PersonForm = ({ persons, setPersons }) => {
     setNewNumber(event.target.value);
   }
 
-  const addPerson = (event) => {
+  const handleClickAdd = (event) => {
     event.preventDefault();
-    if (persons.some(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      setNewName('');
-      setNewNumber('');
-      return;
+    const existingPerson = persons.find(person => person.name === newName);
+
+    if (existingPerson) {
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        updatePerson(existingPerson.id, { ...existingPerson, number: newNumber, id: 564 });
+      } else {
+        setNewName('');
+        setNewNumber('');
+        return;
+      }
+    } else {
+      addPerson({ name: newName, number: newNumber });
     }
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-      id: persons.length + 1,
-    };
-    setPersons([...persons, newPerson]);
     setNewName('');
     setNewNumber('');
   } 
@@ -35,7 +35,7 @@ const PersonForm = ({ persons, setPersons }) => {
     <form>
       <div>name: <input value={newName} onChange={handleNameChange} /></div>
       <div>number: <input value={newNumber} onChange={handleNumberChange} /></div>
-      <div><button type="submit" onClick={addPerson}>add</button></div>
+      <div><button type="submit" persons={persons} onClick={handleClickAdd}>add</button></div>
     </form>
   );
 }
