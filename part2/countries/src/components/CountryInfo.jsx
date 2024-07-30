@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useState } from "react";
 import countriesService from '../services/countries';
+import Weather from "./Weather";
 
 const CountryInfo = ({ countryName }) => {
   const [country, setCountry] = useState(null);
@@ -28,6 +29,7 @@ const CountryInfo = ({ countryName }) => {
         </ul>
       </div>
       <img src={country.flags.png} style={{ width: 200 }}/>
+      {country.capital && <Weather capital={country.capital[0]} /> }
     </div>
   );
 }
